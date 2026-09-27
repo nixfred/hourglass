@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "nixfred.hourglass",
+  "name": "Hourglass",
+  "version": "1.0.0",
+  "author": "nixfred",
+  "license": "MIT",
+  "description": "Screen time for Omarchy. Tracks which app has focus, second by second, straight off the Hyprland socket, and shows where the day went: a 24-hour focus ribbon, app ring, 7-day stack, focus sessions, longest streak and context switches. Nudges you to stand up after a long unbroken stretch. Local only, window classes only, never titles.",
+  "kinds": ["service", "bar-widget"],
+  "entryPoints": {
+    "service": "Service.qml",
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Hourglass",
+    "description": "Active screen time today. Click for where it went.",
+    "category": "System",
+    "aliases": ["screen time", "wellbeing", "focus", "usage", "apps", "hourglass", "time"],
+    "allowMultiple": false,
+    "defaultSection": "right",
+    "defaults": { "refreshSec": 15, "breakMinutes": 90, "showApp": false },
+    "schema": [
+      { "key": "refreshSec", "type": "integer", "label": "Refresh interval (seconds)",
+        "description": "How often the bar rereads today's totals. Tracking itself samples every 2 s regardless.",
+        "min": 5, "max": 300, "defaultValue": 15 },
+      { "key": "breakMinutes", "type": "integer", "label": "Stretch nudge after (minutes)",
+        "description": "The glyph pulses once you have been active this long without a 5 minute break. 0 turns it off.",
+        "min": 0, "max": 480, "defaultValue": 90 },
+      { "key": "showApp", "type": "boolean", "label": "Show the focused app",
+        "description": "Adds the app you are in and its unbroken run beside the total.", "defaultValue": false }
+    ]
+  },
+  "repository": "https://github.com/nixfred/hourglass",
+  "homepage": "https://nixfred.com"
+}
