@@ -39,6 +39,10 @@ The shell service starts `hourglass.py daemon`. It holds a lock, so only one tra
 python3 hourglass.py report    # the JSON the panel reads
 ```
 
+On vic (1920x1080):
+
+![vic](docs/vic-panel.png)
+
 Tested in Test Drive (Omarchy 4.0.2 plugin checkpoint) first:
 
 ![Test Drive](docs/panel-test-drive.png)
