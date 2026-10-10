@@ -24,6 +24,7 @@ Item {
   }
   readonly property int refreshSec: num("refreshSec", 15, 5, 300)
   readonly property int breakMinutes: num("breakMinutes", 90, 0, 480)
+  readonly property int goalHours: num("goalHours", 6, 1, 16)
   readonly property bool stretch: breakMinutes > 0 && !!live.active && (live.run || 0) >= breakMinutes * 60
 
   function fmt(sec) {
@@ -33,6 +34,8 @@ Item {
     if (m > 0) return m + "m"
     return sec + "s"
   }
+
+  function fmtD(sec) { return (sec >= 0 ? "+" : "-") + fmt(Math.abs(sec)) }
 
   function apply(text) {
     var d
@@ -53,7 +56,7 @@ Item {
 
   Process {
     id: poll
-    command: ["python3", root.pluginDir + "hourglass.py", "report", "7"]
+    command: ["python3", root.pluginDir + "hourglass.py", "report", "30", String(root.goalHours * 3600)]
     stdout: StdioCollector {
       waitForEnd: true
       onStreamFinished: root.apply(text)

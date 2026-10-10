@@ -18,6 +18,8 @@ BarWidget {
     var v = settings ? settings[name] : undefined
     return v === undefined ? fallback : v
   }
+  readonly property real goalSec: svc ? svc.goalHours * 3600 : 21600
+  readonly property real goalFrac: svc && svc.total > 0 ? Math.min(1, svc.total / goalSec) : 0
   readonly property bool showApp: String(setting("showApp", false)) === "true"
   readonly property color foreground: bar ? bar.foreground : Color.foreground
 
@@ -30,7 +32,9 @@ BarWidget {
   function tip() {
     if (!svc || !svc.ready) return "Hourglass: starting"
     if (!svc.ok) return "Hourglass: " + svc.error
-    var s = "Hourglass: " + svc.fmt(svc.total) + " active today"
+    var s = "Hourglass: " + svc.fmt(svc.total) + " active today, " + Math.round(100 * goalFrac) + "% of " + svc.fmt(goalSec)
+    if (d.vsTypical !== null && d.vsTypical !== undefined) s += "\n" + svc.fmtD(d.vsTypical) + " vs typical by now"
+    if (d.deep) s += "\nDeep focus " + svc.fmt(d.deep)
     var a = d.apps || []
     for (var i = 0; i < Math.min(3, a.length); i++) s += "\n" + a[i].name + "  " + svc.fmt(a[i].sec)
     if (live.name) s += "\nNow: " + live.name + ", " + svc.fmt(live.run) + " unbroken"
@@ -76,6 +80,15 @@ BarWidget {
         font.family: root.bar ? root.bar.fontFamily : Style.font.family
         font.pixelSize: Style.font.bodySmall
       }
+    }
+
+    Rectangle {  // progress toward the daily goal
+      anchors.left: parent.left; anchors.bottom: parent.bottom
+      anchors.leftMargin: Style.space(6); anchors.bottomMargin: Style.space(2)
+      height: Style.space(2); radius: 1; border.width: 0
+      width: Math.max(0, (parent.width - Style.space(12)) * root.goalFrac)
+      color: root.goalFrac >= 1 ? Color.accent : Util.alpha(root.foreground, 0.55)
+      visible: root.goalFrac > 0
     }
 
     onPressed: function(code) {
